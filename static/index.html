@@ -55,6 +55,7 @@ function drawCircle(context,entity) {
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        fill();
         stroke();                                
     }
 }
@@ -234,7 +235,7 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue','radius':3});
+    addEntityWithoutName({'x':x,'y':y,'colour':'pink','radius':3});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
@@ -242,7 +243,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
+    addEntityWithoutName({'x':x,'y':y,'colour':'#AEEEEE',
                           'radius':3});
 });
 
@@ -257,7 +258,27 @@ function wsSetup() {
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
+        // from last assginment
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState==4){
+                try{
+                    if(xhr.status==200){
+                        let jsonData = JSON.parse(xhr.responseText);
+                        world = jsonData;
+                        console.log(world);
+                        drawNextFrame();
+                    }
+                }catch(e){
+                    alert('Error: ' + e.name);
+                }
+            }
+        };
+        //get data from server
+        xhr.open("GET", "/world");
+        xhr.send(null);
     };
+    
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
     };

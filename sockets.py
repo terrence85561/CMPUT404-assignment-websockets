@@ -101,6 +101,9 @@ def read_ws(ws,client):
                 packet = json.loads(msg)
                 for client in clients:
                     client.put(json.dumps(packet))
+                # set myWorld
+                for k,v in packet.items():
+                    myWorld.set(k,v)
                     # client.put(packet)
 
                 # send_all_json( packet )
